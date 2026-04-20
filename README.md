@@ -2,7 +2,7 @@
 
 An AI-powered voice interview system that automates tutor screening — replacing manual 10-minute phone calls with a consistent, scalable, 24/7 solution.
 
-**Live Demo:** [https://cuemath-ai-tutor-screener-u5pr.onrender.com  ](https://cuemath-ai-tutor-screener-self.vercel.app/)
+**Live Demo:** https://cuemath-ai-tutor-screener-self.vercel.app/
 **Backend API:** https://cuemath-ai-tutor-screener-u5pr.onrender.com  
 
 ---
