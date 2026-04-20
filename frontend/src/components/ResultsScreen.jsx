@@ -1,0 +1,161 @@
+function scoreColor(score) {
+  if (score >= 5) return '#10B981'
+  if (score >= 4) return '#34D399'
+  if (score >= 3) return '#F59E0B'
+  if (score >= 2) return '#F97316'
+  return '#EF4444'
+}
+
+function scoreLabel(score) {
+  if (score >= 5) return 'Exceptional'
+  if (score >= 4) return 'Strong'
+  if (score >= 3) return 'Adequate'
+  if (score >= 2) return 'Weak'
+  return 'Poor'
+}
+
+const REC_STYLES = {
+  Advance: {
+    bg: '#ECFDF5',
+    border: '#10B981',
+    color: '#065F46',
+    icon: '✓',
+    label: 'Advance to Next Round',
+  },
+  Hold: {
+    bg: '#FFFBEB',
+    border: '#F59E0B',
+    color: '#92400E',
+    icon: '◔',
+    label: 'Hold for Further Review',
+  },
+  Reject: {
+    bg: '#FEF2F2',
+    border: '#EF4444',
+    color: '#991B1B',
+    icon: '✕',
+    label: 'Does Not Proceed',
+  },
+}
+
+function ResultsScreen({ report, candidateName, error }) {
+  if (error) {
+    return (
+      <div className="results-screen">
+        <div className="results-card">
+          <div className="brand">
+            <div className="brand-dot" />
+            <span className="brand-name">Cuemath</span>
+          </div>
+          <h2 className="results-title">Interview Complete</h2>
+          <p>Thank you for completing the interview, <strong>{candidateName}</strong>.</p>
+          <div className="error-results">
+            The automated scoring service is temporarily unavailable. Your interview has been
+            recorded and will be reviewed manually. Cuemath's team will be in touch.
+          </div>
+          <p className="tech-note">Error details: {error}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!report) return null
+
+  const avg = report.dimensions.reduce((s, d) => s + d.score, 0) / report.dimensions.length
+  const rec = REC_STYLES[report.overall_recommendation] || REC_STYLES.Hold
+
+  return (
+    <div className="results-screen">
+      <div className="results-card">
+        {/* Header */}
+        <div className="results-header">
+          <div className="brand">
+            <div className="brand-dot" />
+            <span className="brand-name">Cuemath</span>
+          </div>
+          <h1 className="results-title">Interview Assessment</h1>
+          <p className="results-candidate">
+            Candidate: <strong>{candidateName}</strong>
+          </p>
+        </div>
+
+        {/* Recommendation badge */}
+        <div
+          className="rec-badge"
+          style={{
+            background: rec.bg,
+            border: `1.5px solid ${rec.border}`,
+            color: rec.color,
+          }}
+        >
+          <span className="rec-icon">{rec.icon}</span>
+          {rec.label}
+        </div>
+
+        {/* Score overview */}
+        <div className="score-overview">
+          <div className="avg-circle" style={{ borderColor: scoreColor(avg) }}>
+            <span className="avg-number" style={{ color: scoreColor(avg) }}>
+              {avg.toFixed(1)}
+            </span>
+            <span className="avg-denom">/ 5</span>
+          </div>
+          <div className="overview-text">
+            <div className="overview-label">Overall Score</div>
+            <p className="overall-summary">{report.overall_summary}</p>
+          </div>
+        </div>
+
+        {/* Dimension breakdown */}
+        <div className="dimensions-section">
+          <h2 className="section-heading">Detailed Assessment</h2>
+          <div className="dimensions-list">
+            {report.dimensions.map((dim, i) => (
+              <div key={i} className="dim-card">
+                <div className="dim-header">
+                  <span className="dim-name">{dim.name}</span>
+                  <span className="dim-score-badge" style={{ color: scoreColor(dim.score), borderColor: scoreColor(dim.score) }}>
+                    {dim.score}/5 — {scoreLabel(dim.score)}
+                  </span>
+                </div>
+
+                {/* Score bar */}
+                <div className="score-bar-track">
+                  <div
+                    className="score-bar-fill"
+                    style={{
+                      width: `${(dim.score / 5) * 100}%`,
+                      background: scoreColor(dim.score),
+                    }}
+                  />
+                </div>
+
+                {/* Evidence quote */}
+                <blockquote className="dim-evidence">
+                  "{dim.evidence}"
+                </blockquote>
+
+                <p className="dim-notes">{dim.notes}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="results-footer">
+          <div className="footer-divider" />
+          <p>
+            Thank you for your time, <strong>{candidateName.split(' ')[0]}</strong>.
+            Cuemath's team will review this assessment and reach out with next steps shortly.
+          </p>
+          <p className="footer-note">
+            This assessment was generated by Cuemath's AI screening system and will be reviewed
+            by a member of the hiring team.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ResultsScreen
