@@ -180,7 +180,6 @@ VITE_API_URL=https://cuemath-ai-tutor-screener-u5pr.onrender.com
 - Best viewed in Chrome (for speech features)  
 
 ---
-
 ## **Summary**
 
 This project demonstrates:
